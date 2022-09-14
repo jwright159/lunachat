@@ -1,3 +1,6 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+
 // ---- TYPES
 
 declare namespace JSX {
@@ -20,13 +23,10 @@ declare global {
 
 // ---- CODE
 
-document.addEventListener('DOMContentLoaded', () => {
-	const replaceText = (selector: string, text: string) => {
-		const element = document.getElementById(selector);
-		if (element)
-			element.innerText = text;
-	};
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-	for (const app of ['node', 'chrome', 'electron'] as VersionKey[])
-		replaceText(`${app}-version`, window.electron.versions[app]());
-});
+root.render(<p>We are using
+	Node.js {window.electron.versions['node']()},
+	Chromium {window.electron.versions['chrome']()}, and
+	Electron {window.electron.versions['electron']()}.
+</p>);
