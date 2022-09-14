@@ -1,22 +1,57 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
-	entry: './src/main.ts',
-	module: {
-		rules: [
-			{
-				test: /\.ts$/,
-				use: 'ts-loader',
-				exclude: /node_modules/,
-			},
-		],
+module.exports = [
+	{
+		mode: 'development',
+		entry: './src/main.tsx',
+		target: 'electron-main',
+		module: {
+			rules: [{
+				test: /\.ts(x?)$/,
+				include: /src/,
+				use: [{ loader: 'ts-loader' }]
+			}]
+		},
+		output: {
+			path: path.resolve(__dirname, 'dist'),
+			filename: 'main.js'
+		}
 	},
-	resolve: {
-		extensions: ['.ts'],
+	{
+		mode: 'development',
+		entry: './src/renderer.tsx',
+		target: 'electron-renderer',
+		devtool: 'source-map',
+		module: { rules: [{
+			test: /\.ts(x?)$/,
+			include: /src/,
+			use: [{ loader: 'ts-loader' }]
+		}] },
+		output: {
+			path: path.resolve(__dirname, 'dist'),
+			filename: 'renderer.js'
+		},
+		plugins: [
+			new HtmlWebpackPlugin({
+				template: './src/index.html'
+			})
+		]
 	},
-	output: {
-		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-	},
-	mode: "development",
-};
+	{
+		mode: 'development',
+		entry: './src/preload.tsx',
+		target: 'electron-preload',
+		module: {
+			rules: [{
+				test: /\.ts(x?)$/,
+				include: /src/,
+				use: [{ loader: 'ts-loader' }]
+			}]
+		},
+		output: {
+			path: path.resolve(__dirname, 'dist'),
+			filename: 'preload.js'
+		}
+	}
+];

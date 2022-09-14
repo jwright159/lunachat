@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"build": "webpack",
-		"lint": "eslint -c .eslintrc --ext .ts ./src",
+		"build": "webpack --config ./webpack.config.js",
+		"watch": "webpack --config ./webpack.config.js --watch",
 		"start": "npm run build && electron ./dist/main.js"
 	},
 	"repository": {
@@ -19,10 +19,15 @@
 	"homepage": "https://github.com/jwright159/lunachat#readme",
 	"devDependencies": {
 		"@types/jquery": "^3.5.14",
+		"@types/react": "^18.0.20",
+		"@types/react-dom": "^18.0.6",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
 		"electron": "^20.0.1",
 		"eslint": "^7.32.0",
+		"html-webpack-plugin": "^5.5.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
 		"ts-loader": "^9.3.1",
 		"typescript": "^4.7.2",
 		"webpack": "^5.74.0",
