@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = [
 	{
 		mode: 'development',
-		entry: './src/main.tsx',
+		entry: './src/main.ts',
 		target: 'electron-main',
 		module: {
 			rules: [{
@@ -16,6 +16,22 @@ module.exports = [
 		output: {
 			path: path.resolve(__dirname, 'dist'),
 			filename: 'main.js'
+		}
+	},
+	{
+		mode: 'development',
+		entry: './src/preload.ts',
+		target: 'electron-preload',
+		module: {
+			rules: [{
+				test: /\.ts(x?)$/,
+				include: /src/,
+				use: [{ loader: 'ts-loader' }]
+			}]
+		},
+		output: {
+			path: path.resolve(__dirname, 'dist'),
+			filename: 'preload.js'
 		}
 	},
 	{
@@ -37,21 +53,5 @@ module.exports = [
 				template: './src/index.html'
 			})
 		]
-	},
-	{
-		mode: 'development',
-		entry: './src/preload.tsx',
-		target: 'electron-preload',
-		module: {
-			rules: [{
-				test: /\.ts(x?)$/,
-				include: /src/,
-				use: [{ loader: 'ts-loader' }]
-			}]
-		},
-		output: {
-			path: path.resolve(__dirname, 'dist'),
-			filename: 'preload.js'
-		}
 	}
 ];
