@@ -23,7 +23,6 @@
 		"@types/react-dom": "^18.0.6",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
-		"ejs-electron": "^2.1.1",
 		"electron": "^20.0.1",
 		"eslint": "^7.32.0",
 		"html-webpack-plugin": "^5.5.0",

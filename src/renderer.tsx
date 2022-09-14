@@ -20,11 +20,11 @@ declare global {
 
 // ---- CODE
 
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
 	const replaceText = (selector: string, text: string) => {
-		const element = $(`#${selector}`);
+		const element = document.getElementById(selector);
 		if (element)
-			element.text(text);
+			element.innerText = text;
 	};
 
 	for (const app of ['node', 'chrome', 'electron'] as VersionKey[])
