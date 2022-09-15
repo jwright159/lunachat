@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import * as ReactDOM from 'react-dom/client';
+import React, { ChangeEvent, FormEvent } from 'react';
+import ReactDOM from 'react-dom/client';
 
 declare namespace JSX {
 	interface IntrinsicElements {
@@ -41,6 +41,7 @@ class Messages extends React.Component {
 	state: {
 		items: Message[],
 		socket: WebSocket,
+		postText: string,
 	};
 
 	constructor(props: {}) {
@@ -63,13 +64,21 @@ class Messages extends React.Component {
 
 		this.state = {
 			items: [],
-			socket: socket
+			socket: socket,
+			postText: '',
 		};
 	}
 
 	render() {
 		return <div>
-			<button onClick={this.sendDefaultPost}>Ping</button>
+			<form onSubmit={this.sendPostForm}>
+				<input
+					id='post-box'
+					onChange={this.updatePostBox}
+					value={this.state.postText}
+				/>
+				<button>Send</button>
+			</form>
 			<MessageList items={this.state.items} />
 		</div>;
 	}
@@ -81,6 +90,12 @@ class Messages extends React.Component {
 		}));
 	}
 
+	updatePostBox = (event: ChangeEvent) => {
+		this.setState({
+			postText: (event.target as any).value
+		});
+	}
+
 	sendPost = (text: string) => {
 		this.state.socket.send(JSON.stringify({
 			type: 'post',
@@ -88,8 +103,14 @@ class Messages extends React.Component {
 		}));
 	}
 
-	sendDefaultPost = () => {
-		this.sendPost('bepis');
+	sendPostForm = (event: FormEvent) => {
+		event.preventDefault();
+		if (this.state.postText.length === 0)
+			return;
+		this.sendPost(this.state.postText);
+		this.setState({
+			postText: ''
+		});
 	}
 
 	showPost = (text: string) => {
