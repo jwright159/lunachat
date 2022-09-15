@@ -42,6 +42,7 @@ class Messages extends React.Component {
 		items: Message[],
 		socket: WebSocket,
 		postText: string,
+		loginText: string,
 	};
 
 	constructor(props: {}) {
@@ -49,7 +50,7 @@ class Messages extends React.Component {
 
 		const socket = new WebSocket('ws://localhost:8000');
 		socket.addEventListener('open', (event) => {
-			this.sendLogin('bepisman');
+			this.showPost("Connected, not logged in");
 		});
 
 		socket.addEventListener('message', this.recieveMessage);
@@ -66,14 +67,21 @@ class Messages extends React.Component {
 			items: [],
 			socket: socket,
 			postText: '',
+			loginText: '',
 		};
 	}
 
 	render() {
 		return <div>
+			<form onSubmit={this.sendLoginForm}>
+				<input
+					onChange={this.updateLoginBox}
+					value={this.state.loginText}
+				/>
+				<button>Login</button>
+			</form>
 			<form onSubmit={this.sendPostForm}>
 				<input
-					id='post-box'
 					onChange={this.updatePostBox}
 					value={this.state.postText}
 				/>
@@ -83,11 +91,27 @@ class Messages extends React.Component {
 		</div>;
 	}
 
+	updateLoginBox = (event: ChangeEvent) => {
+		this.setState({
+			loginText: (event.target as any).value
+		});
+	}
+
 	sendLogin = (username: string) => {
 		this.state.socket.send(JSON.stringify({
 			type: 'login',
 			username: username
 		}));
+	}
+
+	sendLoginForm = (event: FormEvent) => {
+		event.preventDefault();
+		if (this.state.loginText.length === 0)
+			return;
+		this.sendLogin(this.state.loginText);
+		this.setState({
+			loginText: ''
+		});
 	}
 
 	updatePostBox = (event: ChangeEvent) => {
