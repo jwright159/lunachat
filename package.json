@@ -3,9 +3,10 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"build": "webpack --config ./webpack.config.js",
-		"watch": "webpack --config ./webpack.config.js --watch",
-		"start": "npm run build && electron ./dist/main.js"
+		"build:dev": "webpack --config ./webpack.config.js --mode development",
+		"build:prod": "webpack --config ./webpack.config.js --mode production",
+		"watch": "webpack --config ./webpack.config.js --mode development --watch",
+		"start": "npm run build:dev && electron ./dist/main.js"
 	},
 	"repository": {
 		"type": "git",
@@ -26,6 +27,7 @@
 		"copy-webpack-plugin": "^11.0.0",
 		"electron": "^20.0.1",
 		"electron-devtools-installer": "^3.2.0",
+		"electron-packager": "^16.0.0",
 		"eslint": "^7.32.0",
 		"html-webpack-plugin": "^5.5.0",
 		"react": "^18.2.0",
@@ -35,5 +37,7 @@
 		"webpack": "^5.74.0",
 		"webpack-cli": "^4.10.0"
 	},
-	"private": "true"
+	"private": "true",
+	"main": "dist/main.js",
+	"productName": "Lunachat"
 }
