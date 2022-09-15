@@ -1,7 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
-
-// ---- TYPES (since vs code doesn't like .d.ts files)
 
 declare namespace JSX {
 	interface IntrinsicElements {
@@ -11,7 +9,7 @@ declare namespace JSX {
 
 type VersionKey = 'node' | 'chrome' | 'electron';
 
-export interface ElectronAPI {
+interface ElectronAPI {
 	versions: Record<VersionKey, () => string>,
 }
 
@@ -21,31 +19,79 @@ declare global {
 	}
 }
 
-// ---- CODE
+interface Message {
+	text: string;
+}
 
-const socket = new WebSocket('ws://localhost:8000');
-socket.addEventListener('open', (event) => {
-	socket.send('Connected');
-});
+class MessageList extends React.Component {
+	props: {
+		items: Message[]
+	};
 
-socket.addEventListener('message', (event) => {
-	console.log('Got ' + event.data);
-});
+	render() {
+		return <ul>
+			{this.props.items.map((item, i) => (
+				<li key={i}>{item.text}</li>
+			))}
+		</ul>
+	}
+}
 
-socket.addEventListener('close', (event) => {
-	console.log('Ok actually we closed');
-});
+class Messages extends React.Component {
+	state: {
+		items: Message[],
+		socket: WebSocket,
+	};
 
-const ping = () => {
-	socket.send('bepis');
-};
+	constructor(props: {}) {
+		super(props);
+		this.sendMessage = this.sendMessage.bind(this);
+		this.recieveMessage = this.recieveMessage.bind(this);
+
+		const socket = new WebSocket('ws://localhost:8000');
+		socket.addEventListener('open', (event) => {
+			socket.send('Connected');
+		});
+
+		socket.addEventListener('message', this.recieveMessage);
+
+		socket.addEventListener('close', (event) => {
+			console.log('Ok actually we closed');
+		});
+
+		this.state = {
+			items: [],
+			socket: socket
+		};
+	}
+
+	render() {
+		return <div>
+			<button onClick={this.sendMessage}>Ping</button>
+			<MessageList items={this.state.items} />
+		</div>;
+	}
+
+	sendMessage() {
+		this.state.socket.send('ping');
+	}
+
+	recieveMessage(event: MessageEvent) {
+		this.setState({
+			items: this.state.items.concat({
+				text: event.data
+			})
+		});
+	}
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(<p>We are using
-	Node.js {window.electron.versions['node']()},
-	Chromium {window.electron.versions['chrome']()}, and
-	Electron {window.electron.versions['electron']()}.
-</p>);
-
-root.render(<button onClick={ping}>Ping</button>)
+root.render(<div>
+	<p>
+		We are using
+		Node.js {window.electron.versions['node']()},
+		Chromium {window.electron.versions['chrome']()}, and
+		Electron {window.electron.versions['electron']()}.
+	</p>
+	<Messages />
+</div>);
