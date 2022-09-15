@@ -45,18 +45,20 @@ class Messages extends React.Component {
 
 	constructor(props: {}) {
 		super(props);
-		this.sendMessage = this.sendMessage.bind(this);
-		this.recieveMessage = this.recieveMessage.bind(this);
 
 		const socket = new WebSocket('ws://localhost:8000');
 		socket.addEventListener('open', (event) => {
-			socket.send('Connected');
+			this.sendLogin('bepisman');
 		});
 
 		socket.addEventListener('message', this.recieveMessage);
 
 		socket.addEventListener('close', (event) => {
-			console.log('Ok actually we closed');
+			this.setState({
+				items: this.state.items.concat({
+					text: "Disconnected"
+				})
+			});
 		});
 
 		this.state = {
@@ -67,21 +69,53 @@ class Messages extends React.Component {
 
 	render() {
 		return <div>
-			<button onClick={this.sendMessage}>Ping</button>
+			<button onClick={this.sendDefaultPost}>Ping</button>
 			<MessageList items={this.state.items} />
 		</div>;
 	}
 
-	sendMessage() {
-		this.state.socket.send('ping');
+	sendLogin = (username: string) => {
+		this.state.socket.send(JSON.stringify({
+			type: 'login',
+			username: username
+		}));
 	}
 
-	recieveMessage(event: MessageEvent) {
+	sendPost = (text: string) => {
+		this.state.socket.send(JSON.stringify({
+			type: 'post',
+			text: text
+		}));
+	}
+
+	sendDefaultPost = () => {
+		this.sendPost('bepis');
+	}
+
+	showPost = (text: string) => {
 		this.setState({
 			items: this.state.items.concat({
-				text: event.data
+				text: text
 			})
 		});
+	}
+
+	recieveMessage = (event: MessageEvent) => {
+		const data = JSON.parse(event.data);
+		switch(data['type']) {
+			case 'login':
+				this.showPost(data['username'] + " logged in.");
+				break;
+			case 'post':
+				this.showPost(data['username'] + ": " + data['text']);
+				break;
+			case 'error':
+				console.error(data['error']);
+				break;
+			default:
+				console.error("Invalid type of message " + data['type']);
+				break;
+		}
 	}
 }
 
