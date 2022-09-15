@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent } from 'react';
+import React, { ChangeEvent, FormEvent, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 
 declare namespace JSX {
@@ -20,7 +20,7 @@ declare global {
 }
 
 interface Message {
-	text: string;
+	text: ReactNode;
 }
 
 class MessageList extends React.Component {
@@ -43,6 +43,7 @@ class Messages extends React.Component {
 		socket: WebSocket,
 		postText: string,
 		loginText: string,
+		loginColor: string,
 		loggedInUsername: string | null,
 	};
 
@@ -69,6 +70,7 @@ class Messages extends React.Component {
 			socket: socket,
 			postText: '',
 			loginText: '',
+			loginColor: '#000000',
 			loggedInUsername: null,
 		};
 	}
@@ -78,16 +80,26 @@ class Messages extends React.Component {
 			{this.state.loggedInUsername === null ?
 				<form onSubmit={this.sendLoginForm}>
 					<input
+						id='login-box'
 						onChange={this.updateLoginBox}
 						value={this.state.loginText}
+						placeholder='Username'
+					/>
+					<input
+						id='login-color'
+						type='color'
+						onChange={this.updateLoginColor}
+						value={this.state.loginColor}
 					/>
 					<button>Login</button>
 				</form>
 			:
 				<form onSubmit={this.sendPostForm}>
 					<input
+						id='login-box'
 						onChange={this.updatePostBox}
 						value={this.state.postText}
+						placeholder='Message'
 					/>
 					<button>Send</button>
 				</form>
@@ -98,14 +110,21 @@ class Messages extends React.Component {
 
 	updateLoginBox = (event: ChangeEvent) => {
 		this.setState({
-			loginText: (event.target as any).value
+			loginText: (event.target as any).value,
 		});
 	}
 
-	sendLogin = (username: string) => {
+	updateLoginColor = (event: ChangeEvent) => {
+		this.setState({
+			loginColor: (event.target as any).value,
+		});
+	}
+
+	sendLogin = (username: string, color: string) => {
 		this.state.socket.send(JSON.stringify({
 			type: 'login',
-			username: username
+			username: username,
+			color: color,
 		}));
 	}
 
@@ -113,22 +132,22 @@ class Messages extends React.Component {
 		event.preventDefault();
 		if (this.state.loginText.length === 0)
 			return;
-		this.sendLogin(this.state.loginText);
+		this.sendLogin(this.state.loginText, this.state.loginColor);
 		this.setState({
-			loginText: ''
+			loginText: '',
 		});
 	}
 
 	updatePostBox = (event: ChangeEvent) => {
 		this.setState({
-			postText: (event.target as any).value
+			postText: (event.target as any).value,
 		});
 	}
 
 	sendPost = (text: string) => {
 		this.state.socket.send(JSON.stringify({
 			type: 'post',
-			text: text
+			text: text,
 		}));
 	}
 
@@ -138,14 +157,14 @@ class Messages extends React.Component {
 			return;
 		this.sendPost(this.state.postText);
 		this.setState({
-			postText: ''
+			postText: '',
 		});
 	}
 
-	showPost = (text: string) => {
+	showPost = (text: ReactNode) => {
 		this.setState({
 			items: this.state.items.concat({
-				text: text
+				text: text,
 			})
 		});
 	}
@@ -159,11 +178,11 @@ class Messages extends React.Component {
 					loggedInUsername: data['username']
 				});
 			case 'login':
-				this.showPost(data['username'] + " logged in.");
+				this.showPost(<p><span style={{color: data['color']}}>{data['username']}</span> logged in</p>);
 				break;
 
 			case 'post':
-				this.showPost(data['username'] + ": " + data['text']);
+				this.showPost(<p><span style={{color: data['color']}}>{data['username']}: {data['text']}</span></p>);
 				break;
 
 			case 'error':
