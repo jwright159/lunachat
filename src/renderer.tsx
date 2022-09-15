@@ -43,6 +43,7 @@ class Messages extends React.Component {
 		socket: WebSocket,
 		postText: string,
 		loginText: string,
+		loggedInUsername: string | null,
 	};
 
 	constructor(props: {}) {
@@ -68,25 +69,29 @@ class Messages extends React.Component {
 			socket: socket,
 			postText: '',
 			loginText: '',
+			loggedInUsername: null,
 		};
 	}
 
 	render() {
 		return <div>
-			<form onSubmit={this.sendLoginForm}>
-				<input
-					onChange={this.updateLoginBox}
-					value={this.state.loginText}
-				/>
-				<button>Login</button>
-			</form>
-			<form onSubmit={this.sendPostForm}>
-				<input
-					onChange={this.updatePostBox}
-					value={this.state.postText}
-				/>
-				<button>Send</button>
-			</form>
+			{this.state.loggedInUsername === null ?
+				<form onSubmit={this.sendLoginForm}>
+					<input
+						onChange={this.updateLoginBox}
+						value={this.state.loginText}
+					/>
+					<button>Login</button>
+				</form>
+			:
+				<form onSubmit={this.sendPostForm}>
+					<input
+						onChange={this.updatePostBox}
+						value={this.state.postText}
+					/>
+					<button>Send</button>
+				</form>
+			}
 			<MessageList items={this.state.items} />
 		</div>;
 	}
@@ -147,16 +152,24 @@ class Messages extends React.Component {
 
 	recieveMessage = (event: MessageEvent) => {
 		const data = JSON.parse(event.data);
+		console.log(data)
 		switch(data['type']) {
+			case 'loginSelf':
+				this.setState({
+					loggedInUsername: data['username']
+				});
 			case 'login':
 				this.showPost(data['username'] + " logged in.");
 				break;
+
 			case 'post':
 				this.showPost(data['username'] + ": " + data['text']);
 				break;
+
 			case 'error':
 				console.error(data['error']);
 				break;
+
 			default:
 				console.error("Invalid type of message " + data['type']);
 				break;
