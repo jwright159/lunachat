@@ -32,7 +32,9 @@ class MessageList extends React.Component<{
 	}
 }
 
-class Messages extends React.Component<{}, {
+class Messages extends React.Component<{
+	color?: string,
+}, {
 	items: Message[],
 	socket: WebSocket,
 	postText: string,
@@ -41,8 +43,11 @@ class Messages extends React.Component<{}, {
 	me: User | null,
 }> {
 
-	constructor(props: {}) {
-		super(props);
+	constructor(props: any) {
+		super({
+			color: '#000000',
+			...props
+		});
 
 		const socket = new WebSocket('ws://localhost:8000');
 		socket.addEventListener('open', (event) => {
@@ -52,11 +57,7 @@ class Messages extends React.Component<{}, {
 		socket.addEventListener('message', this.recieveMessage);
 
 		socket.addEventListener('close', (event) => {
-			this.setState({
-				items: this.state.items.concat({
-					text: "Disconnected"
-				})
-			});
+			this.showPost("Disconnected");
 		});
 
 		this.state = {
@@ -64,7 +65,7 @@ class Messages extends React.Component<{}, {
 			socket: socket,
 			postText: '',
 			loginText: '',
-			loginColor: '#000000',
+			loginColor: this.props.color,
 			me: null,
 		};
 	}
