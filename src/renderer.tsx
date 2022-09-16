@@ -7,18 +7,6 @@ declare namespace JSX {
 	}
 }
 
-type VersionKey = 'node' | 'chrome' | 'electron';
-
-interface ElectronAPI {
-	versions: Record<VersionKey, () => string>,
-}
-
-declare global {
-	interface Window {
-		electron: ElectronAPI
-	}
-}
-
 interface Message {
 	text: ReactNode;
 }
@@ -177,6 +165,9 @@ class Messages extends React.Component {
 				this.setState({
 					loggedInUsername: data['username']
 				});
+				this.showPost(<p><span style={{color: data['color']}}>{data['username']}</span> (you) logged in</p>);
+				break;
+				
 			case 'login':
 				this.showPost(<p><span style={{color: data['color']}}>{data['username']}</span> logged in</p>);
 				break;
@@ -198,11 +189,5 @@ class Messages extends React.Component {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<div>
-	<p>
-		We are using
-		Node.js {window.electron.versions['node']()},
-		Chromium {window.electron.versions['chrome']()}, and
-		Electron {window.electron.versions['electron']()}.
-	</p>
 	<Messages />
 </div>);
