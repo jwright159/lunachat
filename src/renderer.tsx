@@ -1,20 +1,27 @@
 import React, { ChangeEvent, FormEvent, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-declare namespace JSX {
-	interface IntrinsicElements {
-		[elemName: string]: any;
+class User {
+	id: string;
+	username: string;
+	color: string;
+
+	constructor(data: any) {
+		this.id = data['id']
+		this.username = data['username']
+		this.color = data['color']
 	}
 }
+
+const users: Record<string, User> = {};
 
 interface Message {
 	text: ReactNode;
 }
 
-class MessageList extends React.Component {
-	props: {
-		items: Message[]
-	};
+class MessageList extends React.Component<{
+	items: Message[]
+}, {}> {
 
 	render() {
 		return <ul>
@@ -25,15 +32,14 @@ class MessageList extends React.Component {
 	}
 }
 
-class Messages extends React.Component {
-	state: {
-		items: Message[],
-		socket: WebSocket,
-		postText: string,
-		loginText: string,
-		loginColor: string,
-		loggedInUsername: string | null,
-	};
+class Messages extends React.Component<{}, {
+	items: Message[],
+	socket: WebSocket,
+	postText: string,
+	loginText: string,
+	loginColor: string,
+	me: User | null,
+}> {
 
 	constructor(props: {}) {
 		super(props);
@@ -59,13 +65,13 @@ class Messages extends React.Component {
 			postText: '',
 			loginText: '',
 			loginColor: '#000000',
-			loggedInUsername: null,
+			me: null,
 		};
 	}
 
 	render() {
 		return <div>
-			{this.state.loggedInUsername === null ?
+			{this.state.me === null ?
 				<form onSubmit={this.sendLoginForm}>
 					<input
 						id='login-box'
@@ -161,28 +167,42 @@ class Messages extends React.Component {
 		const data = JSON.parse(event.data);
 		console.log(data)
 		switch(data['type']) {
-			case 'loginSelf':
-				this.setState({
-					loggedInUsername: data['username']
+			case 'loginSelf': {
+				data['users'].forEach((userData: any) => {
+					const user = new User(userData);
+					users[user.id] = user;
 				});
-				this.showPost(<p><span style={{color: data['color']}}>{data['username']}</span> (you) logged in</p>);
+				const me = new User(data['me']);
+				users[me.id] = me;
+				this.setState({
+					me: me
+				});
+				this.showPost(<p><span style={{color: me.color}}>{me.username}</span> (you) logged in</p>);
 				break;
-				
-			case 'login':
-				this.showPost(<p><span style={{color: data['color']}}>{data['username']}</span> logged in</p>);
-				break;
+			}
 
-			case 'post':
-				this.showPost(<p><span style={{color: data['color']}}>{data['username']}: {data['text']}</span></p>);
+			case 'login': {
+				const sender = new User(data['user']);
+				users[sender.id] = sender;
+				this.showPost(<p><span style={{color: sender.color}}>{sender.username}</span> logged in</p>);
 				break;
+			}
 
-			case 'error':
+			case 'post': {
+				const sender = users[data['user']];
+				this.showPost(<p><span style={{color: sender.color}}>{sender.username}: {data['text']}</span></p>);
+				break;
+			}
+
+			case 'error': {
 				console.error(data['error']);
 				break;
+			}
 
-			default:
+			default: {
 				console.error("Invalid type of message " + data['type']);
 				break;
+			}
 		}
 	}
 }
