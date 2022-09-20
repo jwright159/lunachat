@@ -15,27 +15,27 @@ class User {
 
 const users: Record<string, User> = {};
 
-interface Message {
+interface Post {
 	text: ReactNode;
 }
 
-class MessageList extends React.Component<{
-	items: Message[]
+class PostList extends React.Component<{
+	items: Post[]
 }, {}> {
 
 	render() {
-		return <ul>
+		return <div className='post-list'>
 			{this.props.items.map((item, i) => (
-				<li key={i}>{item.text}</li>
+				<p key={i}>{item.text}</p>
 			))}
-		</ul>
+		</div>
 	}
 }
 
-class Messages extends React.Component<{
+class Posts extends React.Component<{
 	color?: string,
 }, {
-	items: Message[],
+	items: Post[],
 	socket: WebSocket,
 	postText: string,
 	loginText: string,
@@ -71,35 +71,36 @@ class Messages extends React.Component<{
 	}
 
 	render() {
-		return <div>
-			{this.state.me === null ?
-				<form onSubmit={this.sendLoginForm}>
-					<input
-						id='login-box'
-						onChange={this.updateLoginBox}
-						value={this.state.loginText}
-						placeholder='Username'
-					/>
-					<input
-						id='login-color'
-						type='color'
-						onChange={this.updateLoginColor}
-						value={this.state.loginColor}
-					/>
-					<button>Login</button>
-				</form>
-			:
-				<form onSubmit={this.sendPostForm}>
-					<input
-						id='login-box'
-						onChange={this.updatePostBox}
-						value={this.state.postText}
-						placeholder='Message'
-					/>
-					<button>Send</button>
-				</form>
-			}
-			<MessageList items={this.state.items} />
+		return <div className='posts'>
+			<PostList items={this.state.items} />
+			<div className='post-box'>
+				{this.state.me === null ?
+					<form onSubmit={this.sendLoginForm}>
+						<input
+							className='post-box-input'
+							onChange={this.updateLoginBox}
+							value={this.state.loginText}
+							placeholder='Username'
+						/>
+						<input
+							type='color'
+							onChange={this.updateLoginColor}
+							value={this.state.loginColor}
+						/>
+						<button>Login</button>
+					</form>
+				:
+					<form onSubmit={this.sendPostForm}>
+						<input
+							className='post-box-input'
+							onChange={this.updatePostBox}
+							value={this.state.postText}
+							placeholder='Post'
+						/>
+						<button>Send</button>
+					</form>
+				}
+			</div>
 		</div>;
 	}
 
@@ -209,6 +210,6 @@ class Messages extends React.Component<{
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<div>
-	<Messages />
+root.render(<div className='content'>
+	<Posts />
 </div>);
