@@ -24,11 +24,11 @@ class PostList extends React.Component<{
 }, {}> {
 
 	render() {
-		return <div className='post-list'>
+		return <ul className='post-list'>
 			{this.props.items.map((item, i) => (
-				<p key={i}>{item.text}</p>
+				<li key={i}>{item.text}</li>
 			))}
-		</div>
+		</ul>
 	}
 }
 
@@ -73,34 +73,32 @@ class Posts extends React.Component<{
 	render() {
 		return <div className='posts'>
 			<PostList items={this.state.items} />
-			<div className='post-box'>
-				{this.state.me === null ?
-					<form onSubmit={this.sendLoginForm}>
-						<input
-							className='post-box-input'
-							onChange={this.updateLoginBox}
-							value={this.state.loginText}
-							placeholder='Username'
-						/>
-						<input
-							type='color'
-							onChange={this.updateLoginColor}
-							value={this.state.loginColor}
-						/>
-						<button>Login</button>
-					</form>
-				:
-					<form onSubmit={this.sendPostForm}>
-						<input
-							className='post-box-input'
-							onChange={this.updatePostBox}
-							value={this.state.postText}
-							placeholder='Post'
-						/>
-						<button>Send</button>
-					</form>
-				}
-			</div>
+			{this.state.me === null ?
+				<form className='post-box' onSubmit={this.sendLoginForm}>
+					<input
+						className='post-box-input'
+						onChange={this.updateLoginBox}
+						value={this.state.loginText}
+						placeholder='Username'
+					/>
+					<input
+						type='color'
+						onChange={this.updateLoginColor}
+						value={this.state.loginColor}
+					/>
+					<button>Login</button>
+				</form>
+			:
+				<form className='post-box' onSubmit={this.sendPostForm}>
+					<input
+						className='post-box-input'
+						onChange={this.updatePostBox}
+						value={this.state.postText}
+						placeholder='Post'
+					/>
+					<button>Send</button>
+				</form>
+			}
 		</div>;
 	}
 
@@ -179,20 +177,20 @@ class Posts extends React.Component<{
 				this.setState({
 					me: me
 				});
-				this.showPost(<p><span style={{color: me.color}}>{me.username}</span> (you) logged in</p>);
+				this.showPost(<><span style={{color: me.color}}>{me.username}</span> (you) logged in</>);
 				break;
 			}
 
 			case 'login': {
 				const sender = new User(data['user']);
 				users[sender.id] = sender;
-				this.showPost(<p><span style={{color: sender.color}}>{sender.username}</span> logged in</p>);
+				this.showPost(<><span style={{color: sender.color}}>{sender.username}</span> logged in</>);
 				break;
 			}
 
 			case 'post': {
 				const sender = users[data['user']];
-				this.showPost(<p><span style={{color: sender.color}}>{sender.username}: {data['text']}</span></p>);
+				this.showPost(<><span style={{color: sender.color}}>{sender.username}: {data['text']}</span></>);
 				break;
 			}
 
@@ -210,6 +208,6 @@ class Posts extends React.Component<{
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<div className='content'>
+root.render(<>
 	<Posts />
-</div>);
+</>);

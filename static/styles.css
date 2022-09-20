@@ -1,4 +1,4 @@
-html, body, #root, .content {
+html, body, #root {
 	margin: 0;
 	height: 100%;
 }
@@ -21,14 +21,11 @@ p {
 }
 
 .post-box {
+	display: flex;
+	flex-flow: row;
 	flex: 0 0 auto;
 	margin: 1em;
 	margin-top: auto;
-}
-
-.post-box form {
-	display: flex;
-	flex-flow: row;
 }
 
 .post-box-input {
