@@ -1,10 +1,11 @@
 html, body, #root {
 	margin: 0;
 	height: 100%;
+	word-wrap: break-word;
 }
 
 body {
-	font-family: sans-serif;
+	font-family: 'Courier New', Courier, monospace;
 }
 
 .posts {
@@ -18,6 +19,10 @@ body {
 .post-list {
 	flex: 1 1 auto;
 	overflow: hidden scroll;
+}
+
+.post-list p {
+	margin: 0;
 }
 
 .post-box {

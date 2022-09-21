@@ -261,6 +261,8 @@ class Posts extends React.Component<{
 			case 'post': {
 				const sender = users[data['user']];
 				this.showPost(<><span style={{color: sender.color}}>{sender.username}: {data['text']}</span></>);
+				if (sender !== this.state.me)
+					new Audio('static/among-us-emergency-meeting.mp3').play();
 				break;
 			}
 
