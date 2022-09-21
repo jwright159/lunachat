@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
+//import ScrollToBottom from 'react-scroll-to-bottom';
 
 class User {
 	id: string;
@@ -24,11 +25,11 @@ class PostList extends React.Component<{
 }, {}> {
 
 	render() {
-		return <ul className='post-list'>
+		return <div className='post-list'>
 			{this.props.items.map((item, i) => (
-				<li key={i}>{item.text}</li>
+				<p>{item.text}</p>
 			))}
-		</ul>
+		</div>
 	}
 }
 
@@ -43,11 +44,12 @@ class Posts extends React.Component<{
 	me: User | null,
 }> {
 
+	static defaultProps = {
+		color: '#000000',
+	}
+
 	constructor(props: any) {
-		super({
-			color: '#000000',
-			...props
-		});
+		super(props);
 
 		const socket = new WebSocket('ws://localhost:8000');
 		socket.addEventListener('open', (event) => {
