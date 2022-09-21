@@ -27,7 +27,7 @@ class PostList extends React.Component<{
 	render() {
 		return <div className='post-list'>
 			{this.props.items.map((item, i) => (
-				<p>{item.text}</p>
+				<p key={i}>{item.text}</p>
 			))}
 		</div>
 	}
