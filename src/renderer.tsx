@@ -228,7 +228,6 @@ class Posts extends React.Component<{
 		});
 
 		const postList = this.postListRef.current;
-		console.log(postList.state.isSticky);
 		if (postList.state.isSticky)
 			postList.queueScrollToBottom();
 	}
