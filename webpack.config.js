@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 
 module.exports = [
 	{
@@ -39,7 +40,17 @@ module.exports = [
 						from: 'static/**/*',
 					}
 				]
-			})
+			}),
+			new CspHtmlWebpackPlugin({
+				'script-src': "'self'",
+				'style-src': "'self'",
+				'connect-src': "*",
+			}, {
+				nonceEnabled: {
+					'script-src': false,
+					'style-src': false,
+				},
+			}),
 		]
 	}
 ];

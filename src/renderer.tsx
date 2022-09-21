@@ -1,6 +1,5 @@
 import React, { ChangeEvent, FormEvent, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
-//import ScrollToBottom from 'react-scroll-to-bottom';
 
 class User {
 	id: string;
@@ -21,15 +20,49 @@ interface Post {
 }
 
 class PostList extends React.Component<{
-	items: Post[]
-}, {}> {
+	items: Post[],
+}, {
+	isSticky: boolean,
+}> {
+
+	scrollDivRef: React.RefObject<HTMLDivElement>;
+
+	constructor(props: any) {
+		super(props);
+
+		this.scrollDivRef = React.createRef();
+
+		this.state = {
+			isSticky: false,
+		}
+	}
 
 	render() {
-		return <div className='post-list'>
+		return <div className={'post-list' + (this.state.isSticky ? ' sticky' : '')} onScroll={this.updateSticky} ref={this.scrollDivRef}>
 			{this.props.items.map((item, i) => (
 				<p key={i}>{item.text}</p>
 			))}
 		</div>
+	}
+
+	componentDidUpdate() {
+		this.updateSticky();
+	}
+
+	isAtBottom = (element: HTMLDivElement) => {
+		return element.scrollHeight - element.clientHeight - element.scrollTop < 1;
+	}
+
+	updateSticky = () => {
+		const isAtBottom = this.isAtBottom(this.scrollDivRef.current);
+		if (this.state.isSticky != isAtBottom)
+			this.setState({
+				isSticky: isAtBottom,
+			});
+	}
+
+	scrollToBottom = () => {
+		
 	}
 }
 
