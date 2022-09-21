@@ -11,27 +11,22 @@ body {
 	display: flex;
 	flex-flow: column;
 	height: 100%;
+	box-sizing: border-box;
+	padding: 1em;
 }
 
 .post-list {
 	flex: 1 1 auto;
 	overflow: hidden scroll;
-	margin: 1em;
-	margin-bottom: 0;
 }
 
 .post-box {
 	display: flex;
 	flex-flow: row;
 	flex: 0 0 auto;
-	margin: 1em;
 	margin-top: auto;
 }
 
 .post-box-input {
 	flex: 1 1 auto;
-}
-
-.sticky {
-	background-color: brown;
 }

@@ -23,6 +23,7 @@ class PostList extends React.Component<{
 	items: Post[],
 }, {
 	isSticky: boolean,
+	needsToScroll: boolean,
 }> {
 
 	scrollDivRef: React.RefObject<HTMLDivElement>;
@@ -34,18 +35,27 @@ class PostList extends React.Component<{
 
 		this.state = {
 			isSticky: false,
+			needsToScroll: false,
 		}
 	}
 
 	render() {
-		return <div className={'post-list' + (this.state.isSticky ? ' sticky' : '')} onScroll={this.updateSticky} ref={this.scrollDivRef}>
-			{this.props.items.map((item, i) => (
-				<p key={i}>{item.text}</p>
-			))}
-		</div>
+		return <React.Fragment>
+			<div className='post-list' onScroll={this.updateSticky} ref={this.scrollDivRef}>
+				{this.props.items.map((item, i) => (
+					<p key={i}>{item.text}</p>
+				))}
+			</div>
+			{!this.state.isSticky &&
+				<button className='post-list-bottom-button' onClick={this.queueScrollToBottom}>Go to bottom</button>
+			}
+		</React.Fragment>
 	}
 
 	componentDidUpdate() {
+		if (this.state.needsToScroll)
+			this.scrollToBottom();
+		
 		this.updateSticky();
 	}
 
@@ -62,7 +72,23 @@ class PostList extends React.Component<{
 	}
 
 	scrollToBottom = () => {
-		
+		const element = this.scrollDivRef.current;
+		element.scrollTo({
+			top: element.scrollHeight - element.clientHeight,
+			behavior: this.state.isSticky ? 'auto' : 'smooth',
+		});
+
+		if (this.state.needsToScroll)
+			this.setState({
+				needsToScroll: false,
+			});
+	}
+
+	queueScrollToBottom = () => {
+		if (!this.state.needsToScroll)
+			this.setState({
+				needsToScroll: true,
+			});
 	}
 }
 
@@ -79,7 +105,9 @@ class Posts extends React.Component<{
 
 	static defaultProps = {
 		color: '#000000',
-	}
+	};
+
+	postListRef: React.RefObject<PostList>;
 
 	constructor(props: any) {
 		super(props);
@@ -95,6 +123,8 @@ class Posts extends React.Component<{
 			this.showPost("Disconnected");
 		});
 
+		this.postListRef = React.createRef();
+
 		this.state = {
 			items: [],
 			socket: socket,
@@ -107,7 +137,7 @@ class Posts extends React.Component<{
 
 	render() {
 		return <div className='posts'>
-			<PostList items={this.state.items} />
+			<PostList items={this.state.items} ref={this.postListRef}/>
 			{this.state.me === null ?
 				<form className='post-box' onSubmit={this.sendLoginForm}>
 					<input
@@ -196,6 +226,11 @@ class Posts extends React.Component<{
 				text: text,
 			})
 		});
+
+		const postList = this.postListRef.current;
+		console.log(postList.state.isSticky);
+		if (postList.state.isSticky)
+			postList.queueScrollToBottom();
 	}
 
 	recieveMessage = (event: MessageEvent) => {
