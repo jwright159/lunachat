@@ -17,7 +17,10 @@ module.exports = [
 		output: {
 			path: path.resolve(__dirname, 'dist'),
 			filename: 'main.js'
-		}
+		},
+		resolve: {
+			extensions: ['.ts', '.tsx']
+		},
 	},
 	{
 		entry: './src/renderer.tsx',
@@ -44,13 +47,16 @@ module.exports = [
 			new CspHtmlWebpackPlugin({
 				'script-src': "'self'",
 				'style-src': "'self'",
-				'connect-src': "*",
+				'connect-src': "ws://localhost:8000",
 			}, {
 				nonceEnabled: {
 					'script-src': false,
 					'style-src': false,
 				},
 			}),
-		]
+		],
+		resolve: {
+			extensions: ['.ts', '.tsx']
+		},
 	}
 ];
