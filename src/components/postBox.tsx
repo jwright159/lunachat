@@ -18,12 +18,11 @@ export default class PostBox extends React.Component<{
 	render() {
 		return <form className='post-box' onSubmit={this.sendPostForm}>
 			<input
-				className='post-box-input'
 				onChange={this.updatePostBox}
 				value={this.state.postText}
 				placeholder='Post'
 			/>
-			<button>Send</button>
+			<input type='submit' value='Send'/>
 		</form>;
 	}
 

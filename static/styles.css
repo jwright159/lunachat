@@ -8,12 +8,18 @@ body {
 	font-family: 'Courier New', Courier, monospace;
 }
 
-.posts {
+#root {
 	display: flex;
 	flex-flow: column;
 	height: 100%;
 	box-sizing: border-box;
 	padding: 1em;
+}
+
+.posts {
+	display: flex;
+	flex-flow: column;
+	flex: 1 1 auto;
 }
 
 .post-list {
@@ -32,6 +38,16 @@ body {
 	margin-top: auto;
 }
 
-.post-box-input {
+.login-box {
+	margin: 1em;
+	display: flex;
+	flex-flow: column;
+}
+
+.post-box input, .login-box input {
 	flex: 1 1 auto;
+}
+
+.error {
+	color: red;
 }

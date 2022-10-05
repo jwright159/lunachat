@@ -3,6 +3,7 @@ import Posts from './posts';
 import User from '../dataclasses/user';
 import Post from '../dataclasses/post';
 import SocketHandler from '../socketHandler';
+import Login from './login';
 
 export default class App extends React.Component<{}, {
 	users: Record<string, User>,
@@ -28,10 +29,12 @@ export default class App extends React.Component<{}, {
 	render() {
 		return <>
 			<Posts
-				loggedIn={this.state.me !== null}
 				items={this.state.posts}
 				socket={this.state.socket}
 			/>
+			{!this.isLoggedIn() && <Login
+				socket={this.state.socket}
+			/>}
 		</>
 	}
 
@@ -72,6 +75,7 @@ export default class App extends React.Component<{}, {
 
 		socket.on('error', data => {
 			console.error(data['error']);
+			this.addPost(<><span className='error'>{data['error']}</span></>)
 		});
 	}
 
@@ -81,5 +85,9 @@ export default class App extends React.Component<{}, {
 				text: text,
 			}),
 		});
+	}
+
+	isLoggedIn = () => {
+		return this.state.me !== null;
 	}
 }
