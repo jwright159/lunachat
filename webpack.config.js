@@ -47,7 +47,7 @@ module.exports = [
 			new CspHtmlWebpackPlugin({
 				'script-src': "'self'",
 				'style-src': "'self'",
-				'connect-src': "ws://localhost:8000",
+				'connect-src': "wss://localhost:8000",
 			}, {
 				nonceEnabled: {
 					'script-src': false,

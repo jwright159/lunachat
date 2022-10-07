@@ -3,7 +3,7 @@ export default class SocketHandler {
 	eventListeners: Record<string, ((data: any) => void)[]>;
 
 	constructor(host: string) {
-		this.socket = new WebSocket('ws://' + host);
+		this.socket = new WebSocket('wss://' + host);
 		this.eventListeners = {};
 
 		this.socket.addEventListener('message', event => {
