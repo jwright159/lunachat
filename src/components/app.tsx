@@ -4,6 +4,7 @@ import User from '../dataclasses/user';
 import Post from '../dataclasses/post';
 import SocketHandler from '../socketHandler';
 import Login from './login';
+import UserList from './userList';
 
 export default class App extends React.Component<{}, {
 	users: Record<string, User>,
@@ -28,12 +29,18 @@ export default class App extends React.Component<{}, {
 
 	render() {
 		return <>
-			<Posts
-				items={this.state.posts}
-				socket={this.state.socket}
-			/>
-			{!this.isLoggedIn() && <Login
-				socket={this.state.socket}
+			<div className='content'>
+				<Posts
+					posts={this.state.posts}
+					socket={this.state.socket}
+					isLoggedIn={this.isLoggedIn()}
+				/>
+				{!this.isLoggedIn() && <Login
+					socket={this.state.socket}
+				/>}
+			</div>
+			{this.isLoggedIn() && <UserList
+				users={Object.values(this.state.users)}
 			/>}
 		</>
 	}

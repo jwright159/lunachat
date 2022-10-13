@@ -2,7 +2,7 @@ import React from 'react';
 import Post from '../dataclasses/post';
 
 export default class PostList extends React.Component<{
-	items: Post[],
+	posts: Post[],
 }, {
 	isSticky: boolean,
 	prevItemsLength: number,
@@ -24,7 +24,7 @@ export default class PostList extends React.Component<{
 	render() {
 		return <React.Fragment>
 			<div className='post-list' onScroll={this.updateSticky} ref={this.scrollDivRef}>
-				{this.props.items.map((item, i) => (
+				{this.props.posts.map((item, i) => (
 					<p key={i}>{item.text}</p>
 				))}
 			</div>
@@ -35,12 +35,12 @@ export default class PostList extends React.Component<{
 	}
 
 	componentDidUpdate() {
-		if (this.state.isSticky && this.props.items.length !== this.state.prevItemsLength)
+		if (this.state.isSticky && this.props.posts.length !== this.state.prevItemsLength)
 			this.scrollToBottom();
 		
-		if (this.props.items.length !== this.state.prevItemsLength)
+		if (this.props.posts.length !== this.state.prevItemsLength)
 			this.setState({
-				prevItemsLength: this.props.items.length,
+				prevItemsLength: this.props.posts.length,
 			});
 
 		this.updateSticky();

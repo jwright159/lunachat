@@ -10,10 +10,17 @@ body {
 
 #root {
 	display: flex;
+	flex-flow: row;
+}
+
+.content {
+	display: flex;
 	flex-flow: column;
+	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
 	padding: 1em;
+	flex: 1 1 auto;
 }
 
 .posts {
@@ -46,6 +53,16 @@ body {
 
 .post-box input, .login-box input {
 	flex: 1 1 auto;
+}
+
+.post-box input[type='submit'] {
+	width: 5em;
+	flex: 0 0 auto;
+}
+
+.user-list {
+	flex: 0 0 auto;
+	width: 7em;
 }
 
 .error {
