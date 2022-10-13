@@ -66,6 +66,12 @@ export default class App extends React.Component<{}, {
 			this.addPost(<><span style={{color: sender.color}}>{sender.username}</span> logged in</>);
 		});
 
+		socket.on('logout', data => {
+			const sender = this.state.users[data['user']];
+			this.addPost(<><span style={{color: sender.color}}>{sender.username}</span> logged out</>);
+			delete this.state.users[sender.id];
+		});
+
 		socket.on('post', data => {
 			const sender = this.state.users[data['user']];
 			this.addPost(<><span style={{color: sender.color}}>{sender.username}: {data['text']}</span></>);
