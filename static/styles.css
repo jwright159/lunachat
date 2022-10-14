@@ -1,6 +1,7 @@
 body * {
 	box-sizing: border-box;
 	display: flex;
+	white-space: pre;
 }
 
 html, body, #root {
@@ -37,7 +38,6 @@ button, input[type='submit'] {
 
 .post-list p {
 	margin: 0;
-	white-space: pre;
 }
 
 .post-box {
