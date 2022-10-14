@@ -1,3 +1,8 @@
+body * {
+	box-sizing: border-box;
+	display: flex;
+}
+
 html, body, #root {
 	margin: 0;
 	height: 100%;
@@ -8,41 +13,37 @@ body {
 	font-family: 'Courier New', Courier, monospace;
 }
 
+button, input[type='submit'] {
+	display: inline-block;
+}
+
 #root {
-	display: flex;
 	flex-flow: row;
 }
 
 .content {
-	display: flex;
 	flex-flow: column;
 	width: 100%;
 	height: 100%;
-	box-sizing: border-box;
 	padding: 1em;
 	flex: 1 1 auto;
 }
 
 .post-list {
+	flex-flow: column;
 	flex: 1 1 auto;
 	overflow: hidden scroll;
 }
 
 .post-list p {
 	margin: 0;
+	white-space: pre;
 }
 
 .post-box {
-	display: flex;
 	flex-flow: row;
 	flex: 0 0 auto;
 	margin-top: auto;
-}
-
-.login-box {
-	margin: 1em;
-	display: flex;
-	flex-flow: column;
 }
 
 .post-box input, .login-box input {
@@ -54,7 +55,13 @@ body {
 	flex: 0 0 auto;
 }
 
+.login-box {
+	margin: 1em;
+	flex-flow: column;
+}
+
 .user-list {
+	flex-flow: column;
 	flex: 0 0 auto;
 	width: 7em;
 }
