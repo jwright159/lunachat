@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import Posts from './posts';
+import PostList from './postList';
+import PostBox from './postBox';
 import User from '../dataclasses/user';
 import Post from '../dataclasses/post';
 import SocketHandler from '../socketHandler';
@@ -30,14 +31,12 @@ export default class App extends React.Component<{}, {
 	render() {
 		return <>
 			<div className='content'>
-				<Posts
-					posts={this.state.posts}
-					socket={this.state.socket}
-					isLoggedIn={this.isLoggedIn()}
-				/>
-				{!this.isLoggedIn() && <Login
-					socket={this.state.socket}
-				/>}
+				<PostList posts={this.state.posts} />
+				{this.isLoggedIn() ?
+					<PostBox socket={this.state.socket} />
+				:
+					<Login socket={this.state.socket} />
+				}
 			</div>
 			{this.isLoggedIn() && <UserList
 				users={Object.values(this.state.users)}
